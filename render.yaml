@@ -1,0 +1,18 @@
+services:
+- type: web
+  name: run-evolution-lab
+  runtime: python
+  buildCommand: pip install -r requirements.txt
+  startCommand: gunicorn app:app
+  envVars:
+  - key: SECRET_KEY
+    generateValue: true
+  - key: DATABASE_URL
+    fromDatabase:
+      name: run-evolution-db
+      property: connectionString
+  - key: COOKIE_SECURE
+    value: "1"
+databases:
+- name: run-evolution-db
+  plan: free
