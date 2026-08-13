@@ -1,1 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pedir acesso — RunEvolutionLab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14171A;
+    --panel:#1B1F23;
+    --line:#2B3036;
+    --paper:#F5F3EF;
+    --lime:#C4F135;
+    --flare:#FF6B4A;
+    --mute:#8A9199;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    background-image:
+      linear-gradient(180deg, rgba(196,241,53,0.04), transparent 40%),
+      repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(255,255,255,0.02) 80px);
+  }
+  .wrap{width:100%;max-width:400px;}
+  .eyebrow{
+    font-family:'Bebas Neue',sans-serif;
+    letter-spacing:0.35em;
+    font-size:13px;
+    color:var(--lime);
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  h1{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:56px;
+    line-height:0.95;
+    letter-spacing:0.01em;
+    margin-bottom:12px;
+  }
+  .sub{
+    color:var(--mute);
+    font-size:14px;
+    margin-bottom:28px;
+    line-height:1.5;
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    padding:32px 28px;
+    position:relative;
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;
+    height:3px;
+    background:linear-gradient(90deg, var(--lime), transparent 70%);
+  }
+  .flash{
+    background:rgba(255,107,74,0.12);
+    border:1px solid var(--flare);
+    color:#FFB4A0;
+    padding:12px 14px;
+    font-size:14px;
+    margin-bottom:20px;
+  }
+  label{
+    display:block;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--mute);
+    margin-bottom:8px;
+  }
+  .field{margin-bottom:20px;}
+  .hint{
+    font-size:12px;
+    color:var(--mute);
+    margin-top:6px;
+  }
+  input{
+    width:100%;
+    background:var(--ink);
+    border:1px solid var(--line);
+    color:var(--paper);
+    padding:13px 14px;
+    font-size:15px;
+    font-family:'Inter',sans-serif;
+    transition:border-color .15s ease;
+  }
+  input:focus{
+    outline:none;
+    border-color:var(--lime);
+  }
+  button{
+    width:100%;
+    background:var(--lime);
+    color:var(--ink);
+    border:none;
+    padding:15px;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:20px;
+    letter-spacing:0.06em;
+    cursor:pointer;
+    margin-top:8px;
+    transition:transform .12s ease, background .15s ease;
+  }
+  button:hover{background:#D4FF52;}
+  button:active{transform:scale(0.98);}
+  .foot{
+    margin-top:24px;
+    text-align:center;
+    font-size:14px;
+    color:var(--mute);
+  }
+  .foot a{color:var(--lime);text-decoration:none;font-weight:600;}
+  .foot a:hover{text-decoration:underline;}
+  .tick{
+    display:flex;
+    gap:4px;
+    margin-bottom:20px;
+  }
+  .tick span{
+    height:3px;
+    flex:1;
+    background:var(--line);
+  }
+  .tick span:nth-child(2){background:var(--lime);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="tick"><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="eyebrow">Novo atleta</div>
+  <h1>Pedir acesso</h1>
+  <div class="sub">O teu registo fica pendente até ser aprovado por um supervisor.</div>
+  <div class="card">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for m in messages %}
+          <div class="flash">{{ m }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <form method="POST" action="{{ url_for('register') }}">
+      {% if csrf_token %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endif %}
+      <div class="field">
+        <label for="name">Nome</label>
+        <input type="text" id="name" name="name" required autocomplete="name" placeholder="O teu nome completo">
+      </div>
+      <div class="field">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" required autocomplete="email" placeholder="tu@exemplo.com">
+      </div>
+      <div class="field">
+        <label for="password">Palavra-passe</label>
+        <input type="password" id="password" name="password" required autocomplete="new-password" minlength="10" placeholder="Mínimo 10 caracteres">
+        <div class="hint">Usa pelo menos 10 caracteres.</div>
+      </div>
+      <button type="submit">Pedir acesso</button>
+    </form>
+  </div>
+  <div class="foot">Já tens conta? <a href="{{ url_for('login') }}">Entrar</a></div>
+</div>
+</body>
+</html>
 
