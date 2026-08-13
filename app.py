@@ -80,19 +80,16 @@ def analyze_lactate(stages, max_hr=None):
   if speed>0 and lac>=0:a.append({"speed":speed,"lactate":lac,"hr":hr,"pace":s.get("pace") or pace_from_speed(speed),"duration":s.get("duration","")})
  a.sort(key=lambda x:x["speed"])
  if len(a)<4:return {"error":"São necessários pelo menos 4 estágios válidos."}
- # Monotonic/isotonic-like smoothing: running minimum of adjacent 3-point median
  for i,x in enumerate(a):
   vals=[a[j]["lactate"] for j in range(max(0,i-1),min(len(a),i+2))]
   x["smooth"]=sum(vals)/len(vals)
  baseline=sum(x["smooth"] for x in a[:min(2,len(a))])/min(2,len(a))
- # LT1 candidate: first point >= baseline+0.5, with subsequent support; fallback 2.0 mmol.
  lt1i=None
  for i,x in enumerate(a):
   support=a[i+1]["smooth"] if i+1<len(a) else x["smooth"]
   if x["smooth"]>=baseline+0.5 and support>=x["smooth"]-0.15:
    lt1i=i; break
  if lt1i is None: lt1i=min(range(len(a)),key=lambda i:abs(a[i]["smooth"]-2.0))
- # Dmax: line from first to final point, maximum perpendicular distance
  x1,y1=a[0]["speed"],a[0]["smooth"]; x2,y2=a[-1]["speed"],a[-1]["smooth"]
  den=math.hypot(y2-y1,x2-x1) or 1
  d=[]
@@ -101,9 +98,7 @@ def analyze_lactate(stages, max_hr=None):
   d.append(dist)
  lt2i=max(range(1,len(a)-1),key=lambda i:d[i]) if len(a)>2 else len(a)-1
  anchor4=next((i for i,x in enumerate(a) if x["smooth"]>=4),None)
- # If Dmax is implausibly before clear 4 mmol rise, retain Dmax but flag corroboration.
- vo2_est=3.5 + 0.2*(a[-1]["speed"]*60/60)*3.5 # intentionally conservative field proxy
- # A common running economy/VO2 relationship is not universal; mark as estimate.
+ vo2_est=3.5 + 0.2*(a[-1]["speed"]*60/60)*3.5
  result={
   "lt1":{"speed":round(a[lt1i]["speed"],3),"pace":pace_from_speed(a[lt1i]["speed"]),"hr":a[lt1i]["hr"],"lactate":round(a[lt1i]["smooth"],2)},
   "lt2":{"speed":round(a[lt2i]["speed"],3),"pace":pace_from_speed(a[lt2i]["speed"]),"hr":a[lt2i]["hr"],"lactate":round(a[lt2i]["smooth"],2)},
@@ -148,7 +143,19 @@ def logout():session.clear();return redirect(url_for("login"))
 def dashboard():
  u=current();p=Profile.query.get(u.id); athletes=User.query.filter_by(role="athlete").order_by(User.created_at.desc()).all() if u.role=="supervisor" else []
  trainings=Training.query.filter_by(user_id=u.id).order_by(Training.id.desc()).limit(50).all()
- tests=Test.query.filter_by(user_id=u.id).order_by(Test.id.desc()).all()
+ tests_raw=Test.query.filter_by(user_id=u.id).order_by(Test.id.desc()).all()
+ tests=[]
+ for t in tests_raw:
+  try:
+   r=json.loads(t.result_json) if t.result_json else {}
+  except Exception:
+   r={}
+  tests.append({
+   "id":t.id,"test_date":t.test_date,
+   "lt1_pace":(r.get("lt1") or {}).get("pace"),
+   "lt2_pace":(r.get("lt2") or {}).get("pace"),
+   "vo2max_est":r.get("vo2max_est"),
+  })
  return render_template("dashboard.html",user=u,profile=p,athletes=athletes,trainings=trainings,tests=tests)
 
 @app.post("/admin/user/<int:uid>/<action>")
