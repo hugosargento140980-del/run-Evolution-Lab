@@ -1,1 +1,510 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel — RunEvolutionLab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14171A;
+    --panel:#1B1F23;
+    --panel2:#20252A;
+    --line:#2B3036;
+    --paper:#F5F3EF;
+    --lime:#C4F135;
+    --flare:#FF6B4A;
+    --mute:#8A9199;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    padding-bottom:60px;
+  }
+  header{
+    border-bottom:1px solid var(--line);
+    padding:20px 24px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+    background:rgba(20,23,26,0.92);
+    backdrop-filter:blur(8px);
+    z-index:10;
+  }
+  .brand{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:22px;
+    letter-spacing:0.06em;
+  }
+  .brand span{color:var(--lime);}
+  .who{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    font-size:14px;
+    color:var(--mute);
+  }
+  .who a{color:var(--flare);text-decoration:none;font-weight:600;}
+  .who a:hover{text-decoration:underline;}
+  main{
+    max-width:960px;
+    margin:0 auto;
+    padding:32px 24px;
+  }
+  .eyebrow{
+    font-family:'Bebas Neue',sans-serif;
+    letter-spacing:0.3em;
+    font-size:12px;
+    color:var(--lime);
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  h1{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:44px;
+    line-height:1;
+    margin-bottom:32px;
+  }
+  h2{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:24px;
+    letter-spacing:0.02em;
+    margin-bottom:16px;
+    padding-top:8px;
+  }
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(120px,1fr));
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    margin-bottom:40px;
+  }
+  .stat{
+    background:var(--panel);
+    padding:18px 16px;
+  }
+  .stat .num{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:32px;
+    color:var(--lime);
+    line-height:1;
+  }
+  .stat .lbl{
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--mute);
+    margin-top:6px;
+  }
+  section{margin-bottom:44px;}
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    padding:24px;
+    position:relative;
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;
+    height:3px;
+    background:linear-gradient(90deg, var(--lime), transparent 70%);
+  }
+  .grid2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+  @media(max-width:560px){.grid2{grid-template-columns:1fr;}}
+  label{
+    display:block;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--mute);
+    margin-bottom:6px;
+  }
+  .field{margin-bottom:16px;}
+  input, select, textarea{
+    width:100%;
+    background:var(--ink);
+    border:1px solid var(--line);
+    color:var(--paper);
+    padding:11px 12px;
+    font-size:14px;
+    font-family:'Inter',sans-serif;
+  }
+  input:focus, select:focus, textarea:focus{outline:none;border-color:var(--lime);}
+  button, .btn{
+    background:var(--lime);
+    color:var(--ink);
+    border:none;
+    padding:12px 22px;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:16px;
+    letter-spacing:0.05em;
+    cursor:pointer;
+    transition:background .15s ease;
+    display:inline-block;
+    text-decoration:none;
+  }
+  button:hover, .btn:hover{background:#D4FF52;}
+  .btn-ghost{
+    background:transparent;
+    color:var(--paper);
+    border:1px solid var(--line);
+  }
+  .btn-ghost:hover{background:var(--panel2);}
+  .btn-flare{background:var(--flare);color:var(--ink);}
+  .btn-flare:hover{background:#FF8264;}
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:14px;
+  }
+  th{
+    text-align:left;
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--mute);
+    padding:10px 12px;
+    border-bottom:1px solid var(--line);
+  }
+  td{
+    padding:12px;
+    border-bottom:1px solid var(--line);
+  }
+  tr:last-child td{border-bottom:none;}
+  .empty{
+    color:var(--mute);
+    font-size:14px;
+    padding:24px;
+    text-align:center;
+    border:1px dashed var(--line);
+  }
+  .pill{
+    display:inline-block;
+    padding:3px 10px;
+    font-size:11px;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    font-weight:600;
+  }
+  .pill-approved{background:rgba(196,241,53,0.15);color:var(--lime);}
+  .pill-pending{background:rgba(255,107,74,0.15);color:var(--flare);}
+  .pill-blocked{background:rgba(138,145,153,0.15);color:var(--mute);}
+  .row-actions{display:flex;gap:6px;flex-wrap:wrap;}
+  .row-actions form{display:inline;}
+  .small-btn{
+    background:var(--panel2);
+    color:var(--paper);
+    border:1px solid var(--line);
+    padding:6px 12px;
+    font-size:12px;
+    cursor:pointer;
+  }
+  .small-btn:hover{border-color:var(--lime);}
+  .stages-wrap{margin-bottom:16px;}
+  .stage-row{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr auto;
+    gap:8px;
+    margin-bottom:8px;
+  }
+  @media(max-width:560px){.stage-row{grid-template-columns:1fr 1fr;}}
+  .stage-row input{padding:9px 10px;font-size:13px;}
+  .remove-stage{
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--flare);
+    font-size:16px;
+    padding:0 12px;
+    cursor:pointer;
+  }
+  .result-box{
+    margin-top:20px;
+    padding:20px;
+    background:var(--ink);
+    border:1px solid var(--lime);
+    display:none;
+  }
+  .result-box.show{display:block;}
+  .result-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:16px;
+    margin-bottom:12px;
+  }
+  .result-grid .num{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--lime);}
+  .result-grid .lbl{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:0.05em;}
+  .method-note{font-size:12px;color:var(--mute);line-height:1.6;margin-top:12px;}
+  .tick{display:flex;gap:4px;margin-bottom:20px;}
+  .tick span{height:3px;flex:1;background:var(--line);}
+  .tick span:nth-child(3){background:var(--lime);}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">RUN<span>EVOLUTION</span>LAB</div>
+  <div class="who">
+    {{ user.name }} · {{ user.role }}
+    <a href="{{ url_for('logout') }}">Sair</a>
+  </div>
+</header>
+
+<main>
+  <div class="tick"><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="eyebrow">Painel do atleta</div>
+  <h1>Olá, {{ user.name.split(' ')[0] }}</h1>
+
+  <div class="stats">
+    <div class="stat"><div class="num">{{ trainings|length }}</div><div class="lbl">Treinos</div></div>
+    <div class="stat"><div class="num">{{ tests|length }}</div><div class="lbl">Testes</div></div>
+    <div class="stat"><div class="num">{{ profile.vo2max if profile and profile.vo2max else '—' }}</div><div class="lbl">VO2max</div></div>
+    <div class="stat"><div class="num">{{ profile.lt2_pace if profile and profile.lt2_pace else '—' }}</div><div class="lbl">Ritmo LT2</div></div>
+  </div>
+
+  {% if user.role == 'supervisor' %}
+  <section>
+    <h2>Atletas</h2>
+    <div class="card">
+      {% if athletes %}
+      <table>
+        <thead><tr><th>Nome</th><th>E-mail</th><th>Estado</th><th>Ações</th></tr></thead>
+        <tbody>
+          {% for a in athletes %}
+          <tr>
+            <td>{{ a.name }}</td>
+            <td>{{ a.email }}</td>
+            <td>
+              {% if a.status == 'approved' %}<span class="pill pill-approved">Aprovado</span>
+              {% elif a.status == 'blocked' %}<span class="pill pill-blocked">Bloqueado</span>
+              {% else %}<span class="pill pill-pending">Pendente</span>{% endif %}
+            </td>
+            <td>
+              <div class="row-actions">
+                {% if a.status != 'approved' %}
+                <form method="POST" action="{{ url_for('user_action', uid=a.id, action='approve') }}">
+                  {% if csrf_token %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endif %}
+                  <button class="small-btn" type="submit">Aprovar</button>
+                </form>
+                {% endif %}
+                {% if a.status != 'blocked' %}
+                <form method="POST" action="{{ url_for('user_action', uid=a.id, action='block') }}">
+                  {% if csrf_token %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endif %}
+                  <button class="small-btn" type="submit">Bloquear</button>
+                </form>
+                {% else %}
+                <form method="POST" action="{{ url_for('user_action', uid=a.id, action='reactivate') }}">
+                  {% if csrf_token %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endif %}
+                  <button class="small-btn" type="submit">Reativar</button>
+                </form>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty">Ainda não há atletas registados.</div>
+      {% endif %}
+    </div>
+  </section>
+  {% endif %}
+
+  <section>
+    <h2>Perfil</h2>
+    <div class="card">
+      <form method="POST" action="{{ url_for('profile_save') }}">
+        {% if csrf_token %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endif %}
+        <div class="grid2">
+          <div class="field"><label>Altura (cm)</label><input type="number" step="0.1" name="height" value="{{ profile.height if profile else '' }}"></div>
+          <div class="field"><label>Peso (kg)</label><input type="number" step="0.1" name="weight" value="{{ profile.weight if profile else '' }}"></div>
+          <div class="field"><label>FC repouso</label><input type="number" name="resting_hr" value="{{ profile.resting_hr if profile else '' }}"></div>
+          <div class="field"><label>FC máxima</label><input type="number" name="max_hr" value="{{ profile.max_hr if profile else '' }}"></div>
+          <div class="field"><label>VO2máx</label><input type="number" step="0.1" name="vo2max" value="{{ profile.vo2max if profile else '' }}"></div>
+          <div class="field"><label>VLamax</label><input type="number" step="0.01" name="vlamax" value="{{ profile.vlamax if profile else '' }}"></div>
+          <div class="field"><label>Ritmo LT1</label><input type="text" name="lt1_pace" placeholder="4:30/km" value="{{ profile.lt1_pace if profile else '' }}"></div>
+          <div class="field"><label>FC no LT1</label><input type="number" name="lt1_hr" value="{{ profile.lt1_hr if profile else '' }}"></div>
+          <div class="field"><label>Ritmo LT2</label><input type="text" name="lt2_pace" placeholder="4:00/km" value="{{ profile.lt2_pace if profile else '' }}"></div>
+          <div class="field"><label>FC no LT2</label><input type="number" name="lt2_hr" value="{{ profile.lt2_hr if profile else '' }}"></div>
+        </div>
+        <div class="field"><label>Objetivo</label><textarea name="goal" rows="2">{{ profile.goal if profile else '' }}</textarea></div>
+        <button type="submit">Guardar perfil</button>
+      </form>
+    </div>
+  </section>
+
+  <section>
+    <h2>Registar treino</h2>
+    <div class="card">
+      <form method="POST" action="{{ url_for('training_save') }}">
+        {% if csrf_token %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endif %}
+        <div class="grid2">
+          <div class="field"><label>Data</label><input type="date" name="date" required></div>
+          <div class="field"><label>Tipo</label><input type="text" name="type" placeholder="Rodagem, intervalado, longo..."></div>
+          <div class="field"><label>Distância (km)</label><input type="number" step="0.01" name="distance"></div>
+          <div class="field"><label>Duração</label><input type="text" name="duration" placeholder="45:00"></div>
+          <div class="field"><label>Ritmo médio</label><input type="text" name="pace" placeholder="5:10/km"></div>
+          <div class="field"><label>FC média</label><input type="number" name="avg_hr"></div>
+          <div class="field"><label>FC máxima</label><input type="number" name="max_hr"></div>
+          <div class="field"><label>Potência (W)</label><input type="number" step="0.1" name="power"></div>
+          <div class="field"><label>Cadência</label><input type="number" step="0.1" name="cadence"></div>
+          <div class="field"><label>Lactato (mmol/L)</label><input type="number" step="0.1" name="lactate"></div>
+          <div class="field"><label>RPE (1-10)</label><input type="number" step="0.5" name="rpe"></div>
+        </div>
+        <div class="field"><label>Notas</label><textarea name="notes" rows="2"></textarea></div>
+        <button type="submit">Guardar treino</button>
+      </form>
+    </div>
+  </section>
+
+  <section>
+    <h2>Últimos treinos</h2>
+    <div class="card">
+      {% if trainings %}
+      <table>
+        <thead><tr><th>Data</th><th>Tipo</th><th>Dist.</th><th>Ritmo</th><th>FC méd.</th></tr></thead>
+        <tbody>
+          {% for t in trainings %}
+          <tr>
+            <td>{{ t.date }}</td>
+            <td>{{ t.type or '—' }}</td>
+            <td>{{ t.distance ~ ' km' if t.distance else '—' }}</td>
+            <td>{{ t.pace or '—' }}</td>
+            <td>{{ t.avg_hr or '—' }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty">Ainda não registaste nenhum treino.</div>
+      {% endif %}
+    </div>
+  </section>
+
+  <section>
+    <h2>Novo teste de lactato</h2>
+    <div class="card">
+      <div class="grid2">
+        <div class="field"><label>Data do teste</label><input type="date" id="test-date"></div>
+        <div class="field"><label>Protocolo</label><input type="text" id="test-protocol" placeholder="Ex: estágios de 4 min, +0.5 m/s"></div>
+      </div>
+      <label style="margin-top:8px;">Estágios (velocidade em km/h, lactato em mmol/L)</label>
+      <div class="stages-wrap" id="stages"></div>
+      <button type="button" class="btn-ghost" id="add-stage">+ Adicionar estágio</button>
+      <div style="margin-top:20px;">
+        <button type="button" id="run-analysis">Analisar teste</button>
+      </div>
+      <div class="result-box" id="result-box"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Testes anteriores</h2>
+    <div class="card">
+      {% if tests %}
+      <table>
+        <thead><tr><th>Data</th><th>LT1</th><th>LT2</th><th>VO2máx est.</th></tr></thead>
+        <tbody>
+          {% for t in tests %}
+          <tr>
+            <td>{{ t.test_date or '—' }}</td>
+            <td>{{ t.lt1_pace or '—' }}</td>
+            <td>{{ t.lt2_pace or '—' }}</td>
+            <td>{{ t.vo2max_est or '—' }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty">Ainda não fizeste nenhum teste de lactato.</div>
+      {% endif %}
+    </div>
+  </section>
+</main>
+
+<script>
+const stagesDiv = document.getElementById('stages');
+const csrfInput = document.querySelector('input[name="csrf_token"]');
+const csrfToken = csrfInput ? csrfInput.value : '';
+
+function addStage(speed='', lactate='', hr=''){
+  const row = document.createElement('div');
+  row.className = 'stage-row';
+  row.innerHTML = `
+    <input type="number" step="0.1" placeholder="Velocidade km/h" class="s-speed" value="${speed}">
+    <input type="number" step="0.1" placeholder="Lactato mmol/L" class="s-lactate" value="${lactate}">
+    <input type="number" placeholder="FC (opcional)" class="s-hr" value="${hr}">
+    <button type="button" class="remove-stage">×</button>
+  `;
+  row.querySelector('.remove-stage').addEventListener('click', () => row.remove());
+  stagesDiv.appendChild(row);
+}
+document.getElementById('add-stage').addEventListener('click', () => addStage());
+for(let i=0;i<4;i++) addStage();
+
+document.getElementById('run-analysis').addEventListener('click', async () => {
+  const stages = [...stagesDiv.querySelectorAll('.stage-row')].map(row => ({
+    speed: parseFloat(row.querySelector('.s-speed').value) || 0,
+    lactate: parseFloat(row.querySelector('.s-lactate').value) || 0,
+    hr: parseInt(row.querySelector('.s-hr').value) || null
+  })).filter(s => s.speed > 0);
+
+  const box = document.getElementById('result-box');
+  box.classList.remove('show');
+
+  try{
+    const res = await fetch("{{ url_for('test_save') }}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken
+      },
+      body: JSON.stringify({
+        date: document.getElementById('test-date').value,
+        protocol: document.getElementById('test-protocol').value,
+        stages: stages
+      })
+    });
+    const data = await res.json();
+    if(!res.ok){
+      box.innerHTML = `<div style="color:#FFB4A0;">${data.error || 'Erro ao analisar o teste.'}</div>`;
+      box.classList.add('show');
+      return;
+    }
+    const r = data.result;
+    box.innerHTML = `
+      <div class="result-grid">
+        <div><div class="num">${r.lt1.pace || '—'}</div><div class="lbl">LT1</div></div>
+        <div><div class="num">${r.lt2.pace || '—'}</div><div class="lbl">LT2</div></div>
+        <div><div class="num">${r.vo2max_est}</div><div class="lbl">VO2máx est.</div></div>
+        <div><div class="num">${r.max_pace}</div><div class="lbl">Ritmo máx.</div></div>
+      </div>
+      <div class="method-note">
+        LT1: ${r.method.lt1}<br>
+        LT2: ${r.method.lt2}<br>
+        VO2máx: ${r.method.vo2max}
+      </div>
+    `;
+    box.classList.add('show');
+    setTimeout(() => location.reload(), 2500);
+  }catch(err){
+    box.innerHTML = `<div style="color:#FFB4A0;">Não foi possível ligar ao servidor.</div>`;
+    box.classList.add('show');
+  }
+});
+</script>
+</body>
+</html>
 
